@@ -41,8 +41,8 @@ const loginUser = async (email: string, password_plain: string) => {
   };
 
   const options: SignOptions = {
-    // Cast config.jwt_expires_in to the exact MsStringValue type
-    expiresIn: config.jwt_expires_in as MsStringValue, // <-- THIS IS THE NEW CHANGE
+
+    expiresIn: config.jwt_expires_in as MsStringValue,
   };
 
   const token = jwt.sign(

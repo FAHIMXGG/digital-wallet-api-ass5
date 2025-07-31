@@ -4,6 +4,7 @@ import { AuthRoutes } from './modules/auth/auth.route';
 import errorHandler from './middlewares/errorHandler.middleware';
 import { UserRoutes } from './modules/user/user.route';
 import { WalletRoutes } from './modules/wallet/wallet.route';
+import { TransactionRoutes } from './modules/transaction/transaction.route';
 
 
 console.log('--- app.ts: Module loaded ---');
@@ -16,6 +17,7 @@ app.use(cors());
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/users', UserRoutes);
 app.use('/api/v1/wallets', WalletRoutes);
+app.use('/api/v1/transactions', TransactionRoutes);
 
 
 app.get('/', (req, res) => {
