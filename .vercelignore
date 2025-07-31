@@ -1,0 +1,10 @@
+src/
+*.ts
+tsconfig.json
+.env
+.env.local
+.env.example
+node_modules/
+.git/
+README.md
+*.md
