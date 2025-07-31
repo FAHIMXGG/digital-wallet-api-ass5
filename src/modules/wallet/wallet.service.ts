@@ -3,6 +3,7 @@ import { User } from '../user/user.model';
 import { Transaction, ITransactionInput } from '../transaction/transaction.model';
 import mongoose, { Types } from 'mongoose';
 import config from '../../config';
+import { NotificationService } from '../../utils/notification';
 
 
 const getMyWallet = async (userId: string) => {
@@ -96,7 +97,8 @@ const addMoney = async (userId: string, amount: number) => {
     await session.commitTransaction();
     session.endSession();
     
-    //todo-notification
+    NotificationService.sendTransactionNotification(savedTransaction, 'User Top-up');
+
     return wallet;
   } catch (error) {
     await session.abortTransaction();
@@ -138,7 +140,7 @@ const withdrawMoney = async (userId: string, amount: number) => {
 
     await session.commitTransaction();
     session.endSession();
-    //todo-notification
+    NotificationService.sendTransactionNotification(savedTransaction, 'User Withdrawal');
     
 
     return wallet;
@@ -199,7 +201,7 @@ const sendMoney = async (senderId: string, receiverId: string, amount: number) =
 
     await session.commitTransaction();
     session.endSession();
-    //todo-notification
+    NotificationService.sendTransactionNotification(savedTransaction, 'User Send Money');
     
 
     return { senderWallet, receiverWallet };
@@ -256,7 +258,7 @@ const cashInByAgent = async (agentId: string, userId: string, amount: number) =>
     await session.commitTransaction();
     session.endSession();
 
-    //todo-notification
+    NotificationService.sendTransactionNotification(savedTransaction, 'Agent Cash-in');
 
     return { userWallet, agentWallet };
   } catch (error) {
@@ -320,7 +322,7 @@ const cashOut = async (agentId: string, userId: string, amount: number) => {
     await session.commitTransaction();
     session.endSession();
 
-    //todo-notification
+    NotificationService.sendTransactionNotification(savedTransaction, 'Agent Cash-out');
 
     return { userWallet, agentWallet };
   } catch (error) {
