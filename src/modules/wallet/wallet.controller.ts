@@ -34,7 +34,16 @@ const blockUnblockWallet = catchAsync(async (req: Request, res: Response) => {
 
 const addMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { amount } = req.body;
-  const { role, id: agentId } = req.user!; 
+  const { role, id: agentId } = req.user!;
+
+  // Validate amount is a number (strict type checking)
+  if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: 'Amount must be a valid positive number, not a string.'
+    });
+  }
 
   if (role === 'agent') {
     const { userId } = req.body;
@@ -61,6 +70,16 @@ const addMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => 
 
 const withdrawMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { amount } = req.body;
+
+  // Validate amount is a number (strict type checking)
+  if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: 'Amount must be a valid positive number, not a string.'
+    });
+  }
+
   const wallet = await WalletService.withdrawMoney(req.user!.id, amount);
   sendResponse(res, {
     statusCode: 200,
@@ -72,6 +91,16 @@ const withdrawMoney = catchAsync(async (req: AuthenticatedRequest, res: Response
 
 const sendMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { receiverId, amount } = req.body;
+
+  // Validate amount is a number (strict type checking)
+  if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: 'Amount must be a valid positive number, not a string.'
+    });
+  }
+
   const { senderWallet, receiverWallet } = await WalletService.sendMoney(req.user!.id, receiverId, amount);
   sendResponse(res, {
     statusCode: 200,
@@ -83,6 +112,16 @@ const sendMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) =>
 
 const cashOut = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { userId, amount } = req.body;
+
+  // Validate amount is a number (strict type checking)
+  if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: 'Amount must be a valid positive number, not a string.'
+    });
+  }
+
   const { userWallet, agentWallet } = await WalletService.cashOut(req.user!.id, userId, amount);
   sendResponse(res, {
     statusCode: 200,
