@@ -1,4 +1,4 @@
-# Server Url: https://digital-wallet-api-ass5.vercel.app/
+# Live Server Url: https://digital-wallet-api-ass5.vercel.app/
 
 # Digital Wallet API
 
@@ -114,14 +114,15 @@ Authorization:<your-jwt-token>
 
 #### 1.1 Register a Regular User
 ```http
-POST /auth/register
+POST /api/v1/auth/register
 Content-Type: application/json
 
 {
-    "name": "User One",
-    "email": "user1@example.com",
+    "name": "x",
+    "email": "x@example.com",
     "password": "password123",
-    "role": "user"
+    "role": "user",
+    "phone": "01758300000" 
 }
 ```
 
