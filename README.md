@@ -558,6 +558,7 @@ Authorization:<agent_token>
 | `/api/v1/users` | GET | Admin | View all users and agents |
 | `/api/v1/users/approve-agent/:id` | PATCH | Admin | Approve an agent |
 | `/api/v1/users/suspend-agent/:id` | PATCH | Admin | Suspend an agent |
+| `/api/v1/wallets` | GET | Admin | View all wallets (with role filter) |
 | `/api/v1/wallets/my-wallet` | GET | User/Agent/admin | My wallet |
 | `/api/v1/wallets/block/:id` | PATCH | Admin | Block a user wallet |
 | `/api/v1/wallets/add-money` | POST | User/Agent | Add money to wallet |
@@ -566,6 +567,16 @@ Authorization:<agent_token>
 | `/api/v1/wallets/cash-out` | POST | Agent | Cash-out from user wallet |
 | `/api/v1/transactions/my-history` | GET | User/Agent | View transaction history |
 | `/api/v1/transactions` | GET | Admin | View all transactions |
+
+
+### 📊 Query Parameters:
+`/api/v1/transactions/my-history?limit=10`
+`/api/v1/users?limit=10`
+`/api/v1/users?role=agent`
+`/api/v1/wallets?limit=3`
+`/api/v1/wallets?role=user&limit=3`
+`/api/v1/transactions?role=user&limit=3`
+
 
 
 ## Additional Documentation

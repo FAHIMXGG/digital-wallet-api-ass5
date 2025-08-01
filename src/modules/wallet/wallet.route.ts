@@ -4,6 +4,7 @@ import auth from '../../middlewares/auth.middleware';
 
 const router = Router();
 
+router.get('/', auth('admin'), WalletController.getAllWallets);
 router.get('/my-wallet', auth('user', 'agent', 'admin'), WalletController.getMyWallet);
 router.patch('/block/:walletId', auth('admin'), WalletController.blockUnblockWallet);
 router.post('/add-money', auth('user', 'agent'), WalletController.addMoney);

@@ -332,6 +332,101 @@ const cashOut = async (agentId: string, userId: string, amount: number) => {
   }
 };
 
+interface PaginatedResult<T> {
+  data: T[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+
+const getAllWallets = async (query: Record<string, unknown>): Promise<PaginatedResult<IWallet>> => {
+  const page = parseInt((query.page as string) || '1', 10);
+  const limit = parseInt((query.limit as string) || '10', 10);
+  const sortBy = (query.sortBy as string) || 'createdAt';
+  const sortOrder = (query.sortOrder as string) === 'asc' ? 1 : -1;
+  const role = query.role as string;
+
+  const filterQuery = { ...query };
+  delete filterQuery.page;
+  delete filterQuery.limit;
+  delete filterQuery.sortBy;
+  delete filterQuery.sortOrder;
+  delete filterQuery.role;
+
+  const currentPage = Math.max(1, page);
+  const itemsPerPage = Math.min(Math.max(1, limit), 100);
+  const skip = (currentPage - 1) * itemsPerPage;
+
+  const sortObject: Record<string, 1 | -1> = {};
+  sortObject[sortBy] = sortOrder;
+
+  const pipeline: any[] = [
+    ...(Object.keys(filterQuery).length > 0 ? [{ $match: filterQuery }] : []),
+
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'userId'
+      }
+    },
+
+    { $unwind: '$userId' },
+
+    ...(role ? [{ $match: { 'userId.role': role } }] : []),
+
+    {
+      $project: {
+        balance: 1,
+        isBlocked: 1,
+        dailySpentAmount: 1,
+        dailyTransactionCount: 1,
+        monthlySpentAmount: 1,
+        monthlyTransactionCount: 1,
+        lastDailyReset: 1,
+        lastMonthlyReset: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        'userId._id': 1,
+        'userId.name': 1,
+        'userId.email': 1,
+        'userId.role': 1
+      }
+    }
+  ];
+
+  const countPipeline = [...pipeline, { $count: 'total' }];
+  const countResult = await Wallet.aggregate(countPipeline);
+  const totalItems = countResult.length > 0 ? countResult[0].total : 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  pipeline.push(
+    { $sort: sortObject },
+    { $skip: skip },
+    { $limit: itemsPerPage }
+  );
+
+  const wallets = await Wallet.aggregate(pipeline);
+
+  return {
+    data: wallets,
+    pagination: {
+      currentPage,
+      totalPages,
+      totalItems,
+      itemsPerPage,
+      hasNextPage: currentPage < totalPages,
+      hasPrevPage: currentPage > 1,
+    },
+  };
+};
+
 export const WalletService = {
   getMyWallet,
   blockUnblockWallet,
@@ -340,4 +435,5 @@ export const WalletService = {
   sendMoney,
   cashInByAgent,
   cashOut,
+  getAllWallets,
 };

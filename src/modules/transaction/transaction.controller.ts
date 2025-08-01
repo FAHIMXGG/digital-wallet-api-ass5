@@ -11,12 +11,12 @@ interface AuthenticatedRequest extends Request {
 }
 
 const getMyTransactions = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
-  const transactions = await TransactionService.getMyTransactions(req.user!.id);
+  const result = await TransactionService.getMyTransactions(req.user!.id, req.query);
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'Transaction history fetched successfully!',
-    data: transactions,
+    data: result,
   });
 });
 

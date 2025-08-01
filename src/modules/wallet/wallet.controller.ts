@@ -71,7 +71,6 @@ const addMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => 
 const withdrawMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { amount } = req.body;
 
-  // Validate amount is a number (strict type checking)
   if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
     return sendResponse(res, {
       statusCode: 400,
@@ -92,7 +91,6 @@ const withdrawMoney = catchAsync(async (req: AuthenticatedRequest, res: Response
 const sendMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { receiverId, amount } = req.body;
 
-  // Validate amount is a number (strict type checking)
   if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
     return sendResponse(res, {
       statusCode: 400,
@@ -113,7 +111,6 @@ const sendMoney = catchAsync(async (req: AuthenticatedRequest, res: Response) =>
 const cashOut = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   const { userId, amount } = req.body;
 
-  // Validate amount is a number (strict type checking)
   if (!amount || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
     return sendResponse(res, {
       statusCode: 400,
@@ -131,6 +128,16 @@ const cashOut = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   });
 });
 
+const getAllWallets = catchAsync(async (req: Request, res: Response) => {
+  const result = await WalletService.getAllWallets(req.query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'All wallets fetched successfully!',
+    data: result,
+  });
+});
+
 export const WalletController = {
   getMyWallet,
   blockUnblockWallet,
@@ -138,4 +145,5 @@ export const WalletController = {
   withdrawMoney,
   sendMoney,
   cashOut,
+  getAllWallets,
 };
