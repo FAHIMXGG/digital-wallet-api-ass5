@@ -570,12 +570,14 @@ Authorization:<agent_token>
 
 
 ### 📊 Query Parameters:
-`/api/v1/transactions/my-history?limit=10`
+
 `/api/v1/users?limit=10`
 `/api/v1/users?role=agent`
 `/api/v1/wallets?limit=3`
 `/api/v1/wallets?role=user&limit=3`
+`/api/v1/transactions/my-history?limit=10`
 `/api/v1/transactions?role=user&limit=3`
+`/my-history?role=agent&limit=1`
 
 
 
