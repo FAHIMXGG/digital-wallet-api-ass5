@@ -118,22 +118,31 @@ POST /api/v1/auth/register
 Content-Type: application/json
 
 {
-    "name": "x",
-    "email": "x@example.com",
+    "name": "user0",
+    "email": "user0@example.com",
     "password": "password123",
     "role": "user",
-    "phone": "01758300000" 
+    "phone": "01758000000" 
 }
 ```
 
 **Response:**
 ```json
 {
-    "_id": "user_id_here",
-    "name": "User One",
-    "email": "user1@example.com",
-    "role": "user",
-    "token": "jwt_token_here"
+    "success": true,
+    "message": "User registered successfully!",
+    "data": {
+        "name": "user0",
+        "email": "user0@example.com",
+        "phone": "01758000000",
+        "role": "user",
+        "_id": "688c84ede1a80a2b9ab1f659",
+        "isApproved": true,
+        "createdAt": "2025-08-01T09:12:13.762Z",
+        "updatedAt": "2025-08-01T09:12:13.913Z",
+        "__v": 0,
+        "wallet": "688c84ede1a80a2b9ab1f65b"
+    }
 }
 ```
 
@@ -141,7 +150,7 @@ Content-Type: application/json
 
 #### 1.2 Register an Agent
 ```http
-POST /auth/register
+POST /api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -152,22 +161,11 @@ Content-Type: application/json
 }
 ```
 
-**Response:**
-```json
-{
-    "_id": "agent_id_here",
-    "name": "Agent Alpha",
-    "email": "agent.alpha@example.com",
-    "role": "agent",
-    "token": "jwt_token_here"
-}
-```
-
 > 📝 **Action:** Copy the `_id` from the response. This is your `<AGENT_ID>`.
 
 #### 1.3 Login (Admin, User, Agent)
 ```http
-POST /auth/login
+POST /api/v1/auth/login
 Content-Type: application/json
 ```
 
@@ -207,31 +205,15 @@ Content-Type: application/json
 
 #### 2.1 View All Users & Agents
 ```http
-GET /users
+GET /api/v1/users
 Authorization:<admin_token>
-```
-
-**Response:**
-```json
-[
-    {
-        "_id": "user_id",
-        "name": "User One",
-        "email": "user1@example.com",
-        "role": "user",
-        "wallet": {
-            "_id": "wallet_id",
-            "balance": 1000
-        }
-    }
-]
 ```
 
 > 📝 **Action:** Use this to get the IDs of all users, agents, and their wallets.
 
 #### 2.2 View All Transactions
 ```http
-GET /transactions
+GET /api/v1/transactions
 Authorization:<admin_token>
 ```
 
@@ -239,7 +221,7 @@ Authorization:<admin_token>
 
 #### 2.3 Approve an Agent
 ```http
-PATCH /users/approve-agent/<AGENT_ID>
+PATCH /api/v1/users/approve-agent/<AGENT_ID>
 Authorization:<admin_token>
 Content-Type: application/json
 
@@ -250,16 +232,16 @@ Content-Type: application/json
 
 #### 2.4 Suspend an Agent
 ```http
-PATCH /users/suspend-agent/<AGENT_ID>
+PATCH /api/v1/users/suspend-agent/<AGENT_ID>
 Authorization:<admin_token>
 Content-Type: application/json
 
 {}
 ```
 
-#### 2.5 Block a User Wallet
+#### 2.5 Block/Unblock a User Wallet
 ```http
-PATCH /wallets/block/<USER_WALLET_ID>
+PATCH /api/v1/wallets/block/<USER_WALLET_ID>
 Authorization:<admin_token>
 Content-Type: application/json
 
@@ -278,7 +260,7 @@ Content-Type: application/json
 
 #### 3.1 Add Money (Top-up)
 ```http
-POST /wallets/add-money
+POST /api/v1/wallets/add-money
 Authorization:<user_token>
 Content-Type: application/json
 
@@ -290,16 +272,22 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-    "message": "Money added successfully",
-    "wallet": {
-        "_id": "wallet_id",
-        "balance": 6000,
-        "userId": "user_id"
-    },
-    "transaction": {
-        "_id": "transaction_id",
-        "type": "add_money",
-        "amount": 5000
+    "success": true,
+    "message": "Money added successfully!",
+    "data": {
+        "_id": "688a4d730aa0b48251eb30a3",
+        "userId": "688a4d720aa0b48251eb30a1",
+        "balance": 21950,
+        "isBlocked": false,
+        "dailySpentAmount": 6100,
+        "dailyTransactionCount": 3,
+        "monthlySpentAmount": 6100,
+        "monthlyTransactionCount": 3,
+        "lastDailyReset": "2025-08-01T09:19:22.856Z",
+        "lastMonthlyReset": "2025-08-01T09:19:22.856Z",
+        "createdAt": "2025-07-30T16:50:59.104Z",
+        "updatedAt": "2025-08-01T09:20:13.451Z",
+        "__v": 0
     }
 }
 ```
@@ -308,7 +296,7 @@ Content-Type: application/json
 
 #### 3.2 Withdraw Money
 ```http
-POST /wallets/withdraw
+POST /api/v1/wallets/withdraw
 Authorization:<user_token>
 Content-Type: application/json
 
@@ -321,7 +309,7 @@ Content-Type: application/json
 
 #### 3.3 Send Money
 ```http
-POST /wallets/send-money
+POST /api/v1/wallets/send-money
 Authorization:<user_token>
 Content-Type: application/json
 
@@ -335,7 +323,7 @@ Content-Type: application/json
 
 #### 3.4 View My Transaction History
 ```http
-GET /transactions/my-history
+GET /api/v1/transactions/my-history
 Authorization:<user_token>
 ```
 
@@ -343,13 +331,18 @@ Authorization:<user_token>
 ```json
 [
     {
-        "_id": "transaction_id",
-        "type": "send_money",
-        "amount": 500,
-        "senderId": "user_id",
-        "receiverId": "another_user_id",
-        "createdAt": "2024-01-01T00:00:00.000Z"
-    }
+            "_id": "688ba1fa2e052dccb2805e8a",
+            "sender": "688a4d720aa0b48251eb30a1",
+            "amount": 5000,
+            "type": "add_money",
+            "status": "completed",
+            "fee": 0,
+            "commission": 0,
+            "description": "Money added to wallet by user",
+            "createdAt": "2025-07-31T17:03:54.891Z",
+            "updatedAt": "2025-07-31T17:03:54.891Z",
+            "__v": 0
+        }
 ]
 ```
 
@@ -363,7 +356,7 @@ Authorization:<user_token>
 
 #### 4.1 Add Money to User (Cash-in)
 ```http
-POST /wallets/add-money
+POST /api/v1/wallets/add-money
 Authorization:<agent_token>
 Content-Type: application/json
 
@@ -376,17 +369,39 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-    "message": "Money added successfully",
-    "wallet": {
-        "_id": "wallet_id",
-        "balance": 2500,
-        "userId": "user_id"
-    },
-    "transaction": {
-        "_id": "transaction_id",
-        "type": "add_money",
-        "amount": 1500,
-        "agentId": "agent_id"
+    "success": true,
+    "message": "Cash-in successful! Agent received commission.",
+    "data": {
+        "userWallet": {
+            "_id": "688a4dc597ad660d4909008f",
+            "userId": "688a4dc497ad660d4909008d",
+            "balance": 2048,
+            "isBlocked": false,
+            "dailySpentAmount": 0,
+            "dailyTransactionCount": 0,
+            "monthlySpentAmount": 0,
+            "monthlyTransactionCount": 0,
+            "lastDailyReset": "2025-07-30T16:52:21.057Z",
+            "lastMonthlyReset": "2025-07-30T16:52:21.057Z",
+            "createdAt": "2025-07-30T16:52:21.058Z",
+            "updatedAt": "2025-08-01T09:20:08.994Z",
+            "__v": 0
+        },
+        "agentWallet": {
+            "_id": "688a5087b5aa9c4283885ed5",
+            "userId": "688a5087b5aa9c4283885ed3",
+            "balance": 109.99000000000001,
+            "isBlocked": false,
+            "dailySpentAmount": 0,
+            "dailyTransactionCount": 0,
+            "monthlySpentAmount": 0,
+            "monthlyTransactionCount": 0,
+            "lastDailyReset": "2025-07-30T17:04:07.604Z",
+            "lastMonthlyReset": "2025-07-30T17:04:07.604Z",
+            "createdAt": "2025-07-30T17:04:07.604Z",
+            "updatedAt": "2025-08-01T09:20:08.999Z",
+            "__v": 0
+        }
     }
 }
 ```
@@ -395,7 +410,7 @@ Content-Type: application/json
 
 #### 4.2 Withdraw Money from User (Cash-out)
 ```http
-POST /wallets/cash-out
+POST /api/v1/wallets/cash-out
 Authorization:<agent_token>
 Content-Type: application/json
 
@@ -408,18 +423,39 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-    "message": "Cash-out successful",
-    "wallet": {
-        "_id": "wallet_id",
-        "balance": 2250,
-        "userId": "user_id"
-    },
-    "transaction": {
-        "_id": "transaction_id",
-        "type": "cash_out",
-        "amount": 250,
-        "agentId": "agent_id",
-        "commission": 12.5
+    "success": true,
+    "message": "Cash-out successful! Agent received commission.",
+    "data": {
+        "userWallet": {
+            "_id": "688a4d730aa0b48251eb30a3",
+            "userId": "688a4d720aa0b48251eb30a1",
+            "balance": 18050,
+            "isBlocked": false,
+            "dailySpentAmount": 5000,
+            "dailyTransactionCount": 1,
+            "monthlySpentAmount": 5000,
+            "monthlyTransactionCount": 1,
+            "lastDailyReset": "2025-08-01T09:19:22.856Z",
+            "lastMonthlyReset": "2025-08-01T09:19:22.856Z",
+            "createdAt": "2025-07-30T16:50:59.104Z",
+            "updatedAt": "2025-08-01T09:19:22.857Z",
+            "__v": 0
+        },
+        "agentWallet": {
+            "_id": "688a5087b5aa9c4283885ed5",
+            "userId": "688a5087b5aa9c4283885ed3",
+            "balance": 104.995,
+            "isBlocked": false,
+            "dailySpentAmount": 0,
+            "dailyTransactionCount": 0,
+            "monthlySpentAmount": 0,
+            "monthlyTransactionCount": 0,
+            "lastDailyReset": "2025-07-30T17:04:07.604Z",
+            "lastMonthlyReset": "2025-07-30T17:04:07.604Z",
+            "createdAt": "2025-07-30T17:04:07.604Z",
+            "updatedAt": "2025-08-01T09:19:22.873Z",
+            "__v": 0
+        }
     }
 }
 ```
@@ -428,7 +464,7 @@ Content-Type: application/json
 
 #### 4.3 View My Commission History
 ```http
-GET /transactions/my-history
+GET /api/v1/transactions/my-history
 Authorization:<agent_token>
 ```
 
@@ -436,13 +472,39 @@ Authorization:<agent_token>
 ```json
 [
     {
-        "_id": "transaction_id",
-        "type": "cash_out",
-        "amount": 250,
-        "agentId": "agent_id",
-        "commission": 12.5,
-        "createdAt": "2024-01-01T00:00:00.000Z"
-    }
+    "success": true,
+    "message": "Transaction history fetched successfully!",
+    "data": [
+        {
+            "_id": "688b12e4e964f81c90bb8aa2",
+            "sender": "688a5087b5aa9c4283885ed3",
+            "receiver": "688a4d720aa0b48251eb30a1",
+            "amount": 5000,
+            "type": "cash_out",
+            "status": "completed",
+            "fee": 0,
+            "commission": 25,
+            "description": "Cash-out of 5000 for user 688a4d720aa0b48251eb30a1 by agent 688a5087b5aa9c4283885ed3. Agent commission: 25.00",
+            "createdAt": "2025-07-31T06:53:24.108Z",
+            "updatedAt": "2025-07-31T06:53:24.108Z",
+            "__v": 0
+        },
+        {
+            "_id": "688b0ec8e964f81c90bb8a89",
+            "sender": "688a5087b5aa9c4283885ed3",
+            "receiver": "688a4dc497ad660d4909008d",
+            "amount": 999,
+            "type": "cash_in",
+            "status": "completed",
+            "fee": 0,
+            "commission": 4.995,
+            "description": "Cash-in of 999 for user 688a4dc497ad660d4909008d by agent 688a5087b5aa9c4283885ed3. Agent commission: 5.00",
+            "createdAt": "2025-07-31T06:35:52.033Z",
+            "updatedAt": "2025-07-31T06:35:52.033Z",
+            "__v": 0
+        }
+    ]
+}
 ]
 ```
 
@@ -463,7 +525,7 @@ Authorization:<agent_token>
 **Test Steps:**
 1. Make 3 successful transactions:
    ```http
-   POST /wallets/withdraw
+   POST /api/v1/wallets/withdraw
    Authorization:<user_token>
    Content-Type: application/json
 
@@ -491,15 +553,21 @@ Authorization:<agent_token>
 
 | Endpoint | Method | Auth Required | Description |
 |----------|--------|---------------|-------------|
-| `/auth/register` | POST | ❌ | Register new user/agent |
-| `/auth/login` | POST | ❌ | Login and get JWT token |
-| `/users` | GET | Admin | View all users and agents |
-| `/transactions` | GET | Admin | View all transactions |
-| `/users/approve-agent/:id` | PATCH | Admin | Approve an agent |
-| `/users/suspend-agent/:id` | PATCH | Admin | Suspend an agent |
-| `/wallets/block/:id` | PATCH | Admin | Block a user wallet |
-| `/wallets/add-money` | POST | User/Agent | Add money to wallet |
-| `/wallets/withdraw` | POST | User | Withdraw money |
-| `/wallets/send-money` | POST | User | Send money to another user |
-| `/wallets/cash-out` | POST | Agent | Cash-out from user wallet |
-| `/transactions/my-history` | GET | User/Agent | View transaction history |
+| `/api/v1/auth/register` | POST | ❌ | Register new user/agent |
+| `/api/v1/auth/login` | POST | ❌ | Login and get JWT token |
+| `/api/v1/users` | GET | Admin | View all users and agents |
+| `/api/v1/users/approve-agent/:id` | PATCH | Admin | Approve an agent |
+| `/api/v1/users/suspend-agent/:id` | PATCH | Admin | Suspend an agent |
+| `/api/v1/wallets/my-wallet` | GET | User/Agent/admin | My wallet |
+| `/api/v1/wallets/block/:id` | PATCH | Admin | Block a user wallet |
+| `/api/v1/wallets/add-money` | POST | User/Agent | Add money to wallet |
+| `/api/v1/wallets/withdraw` | POST | User | Withdraw money |
+| `/api/v1/wallets/send-money` | POST | User | Send money to another user |
+| `/api/v1/wallets/cash-out` | POST | Agent | Cash-out from user wallet |
+| `/api/v1/transactions/my-history` | GET | User/Agent | View transaction history |
+| `/api/v1/transactions` | GET | Admin | View all transactions |
+
+
+## Additional Documentation
+
+📋 **[API Validation Examples](validation-examples.md)** - Detailed examples of validation error responses and success formats for all API endpoints.

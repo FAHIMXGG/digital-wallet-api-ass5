@@ -1,3 +1,21 @@
+### 📊 Quick Reference
+
+| Endpoint | Method | Auth Required | Description |
+|----------|--------|---------------|-------------|
+| `/api/v1/auth/register` | POST | ❌ | Register new user/agent |
+| `/api/v1/auth/login` | POST | ❌ | Login and get JWT token |
+| `/api/v1/users` | GET | Admin | View all users and agents |
+| `/api/v1/users/approve-agent/:id` | PATCH | Admin | Approve an agent |
+| `/api/v1/users/suspend-agent/:id` | PATCH | Admin | Suspend an agent |
+| `/api/v1/wallets/my-wallet` | GET | User/Agent/admin | My wallet |
+| `/api/v1/wallets/block/:id` | PATCH | Admin | Block a user wallet |
+| `/api/v1/wallets/add-money` | POST | User/Agent | Add money to wallet |
+| `/api/v1/wallets/withdraw` | POST | User | Withdraw money |
+| `/api/v1/wallets/send-money` | POST | User | Send money to another user |
+| `/api/v1/wallets/cash-out` | POST | Agent | Cash-out from user wallet |
+| `/api/v1/transactions/my-history` | GET | User/Agent | View transaction history |
+| `/api/v1/transactions` | GET | Admin | View all transactions |
+
 # API Validation Error Response Examples
 
 This document shows the standardized JSON format for validation errors in the Digital Wallet API.
