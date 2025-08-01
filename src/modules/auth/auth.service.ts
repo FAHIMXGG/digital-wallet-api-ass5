@@ -45,6 +45,9 @@ const loginUser = async (email: string, password_plain: string) => {
     expiresIn: config.jwt_expires_in as MsStringValue,
   };
 
+  if (!config.jwt_secret) {
+    throw new Error('JWT secret is not defined in configuration.');
+  }
   const token = jwt.sign(
     payload,
     config.jwt_secret,
