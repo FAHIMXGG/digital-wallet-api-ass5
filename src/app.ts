@@ -7,8 +7,6 @@ import { WalletRoutes } from './modules/wallet/wallet.route';
 import { TransactionRoutes } from './modules/transaction/transaction.route';
 
 
-console.log('--- app.ts: Module loaded ---');
-
 const app: Application = express();
 
 app.use(express.json());

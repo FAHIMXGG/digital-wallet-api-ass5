@@ -10,13 +10,14 @@ if (!jwtSecret) {
   );
 }
 
-const jwtExpiresIn: string = process.env.JWT_EXPIRES_IN || "7d";
+//const jwtExpiresIn: string = process.env.JWT_EXPIRES_IN || "7d";
 
 export default {
   port: process.env.PORT || 5000,
   database_url: process.env.DATABASE_URL,
-  jwt_secret: jwtSecret,
-  jwt_expires_in: jwtExpiresIn,
+  jwt_secret: process.env.JWT_SECRET,
+  jwt_expires_in: process.env.JWT_EXPIRES_IN,
+  BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND,
   initial_wallet_balance: parseFloat(
     process.env.INITIAL_WALLET_BALANCE || "50"
   ),

@@ -1,5 +1,6 @@
 import { Schema, model, Types, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import config from '../../config';
 export type UserRole = 'user' | 'agent' | 'admin';
 
 export interface IUser extends Document {
@@ -61,7 +62,7 @@ const userSchema = new Schema<IUser>(
 
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password as string, 10);
+    this.password = await bcrypt.hash(this.password as string, Number(config.BCRYPT_SALT_ROUND));
   }
   next();
 });

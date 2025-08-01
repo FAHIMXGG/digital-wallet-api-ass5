@@ -27,6 +27,7 @@ const auth = (...requiredRoles: UserRole[]) => {
     let decoded;
     try {
       decoded = jwt.verify(token as string, config.jwt_secret as string) as JwtPayload;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return sendResponse(res, {
         statusCode: 401,

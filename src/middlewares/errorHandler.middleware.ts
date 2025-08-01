@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, } from 'express';
 import sendResponse from '../utils/apiResponse';
-
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (err: any, req: Request, res: Response) => {
   console.error(err);
 
   let statusCode = err.statusCode || 500;
