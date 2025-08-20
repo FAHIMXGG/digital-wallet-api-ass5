@@ -47,6 +47,68 @@ export const loginValidationSchema = {
   }
 };
 
+export const verifyEmailValidationSchema = {
+  email: {
+    required: true,
+    type: 'string' as const,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  },
+  otp: {
+    required: true,
+    type: 'string' as const,
+    pattern: /^[0-9]{6}$/
+  }
+};
+
+export const resendVerificationValidationSchema = {
+  email: {
+    required: true,
+    type: 'string' as const,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  }
+};
+
+export const forgotPasswordValidationSchema = {
+  email: {
+    required: true,
+    type: 'string' as const,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  }
+};
+
+export const resetPasswordValidationSchema = {
+  email: {
+    required: true,
+    type: 'string' as const,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  },
+  otp: {
+    required: true,
+    type: 'string' as const,
+    pattern: /^[0-9]{6}$/
+  },
+  newPassword: {
+    required: true,
+    type: 'string' as const,
+    minLength: 6,
+    maxLength: 100
+  }
+};
+
+export const changePasswordValidationSchema = {
+  currentPassword: {
+    required: true,
+    type: 'string' as const,
+    minLength: 1
+  },
+  newPassword: {
+    required: true,
+    type: 'string' as const,
+    minLength: 6,
+    maxLength: 100
+  }
+};
+
 interface ValidationRule {
   required?: boolean;
   type?: 'string' | 'number' | 'boolean' | 'array' | 'object';
@@ -145,3 +207,8 @@ export const validateRequest = (schema: ValidationSchema) => {
 // Pre-configured validation middlewares
 export const validateRegister = validateRequest(registerValidationSchema);
 export const validateLogin = validateRequest(loginValidationSchema);
+export const validateVerifyEmail = validateRequest(verifyEmailValidationSchema);
+export const validateResendVerification = validateRequest(resendVerificationValidationSchema);
+export const validateForgotPassword = validateRequest(forgotPasswordValidationSchema);
+export const validateResetPassword = validateRequest(resetPasswordValidationSchema);
+export const validateChangePassword = validateRequest(changePasswordValidationSchema);

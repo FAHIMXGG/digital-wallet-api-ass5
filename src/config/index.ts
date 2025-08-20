@@ -26,4 +26,14 @@ export default {
   daily_transaction_limit_count: parseInt(process.env.DAILY_TRANSACTION_LIMIT_COUNT || '5'),
   monthly_transaction_limit_amount: parseFloat(process.env.MONTHLY_TRANSACTION_LIMIT_AMOUNT || '50000'),
   monthly_transaction_limit_count: parseInt(process.env.MONTHLY_TRANSACTION_LIMIT_COUNT || '20'),
+
+  // Email Configuration
+  email_host: process.env.EMAIL_HOST,
+  email_port: parseInt(process.env.EMAIL_PORT || '587'),
+  email_user: process.env.EMAIL_USER,
+  email_password: process.env.EMAIL_PASSWORD,
+  email_from: process.env.EMAIL_FROM,
+
+  // OTP Configuration
+  otp_expires_in: parseInt(process.env.OTP_EXPIRES_IN || '300'), // 5 minutes in seconds
 };

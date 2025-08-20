@@ -7,9 +7,10 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password?: string;
-  phone?: string; 
+  phone?: string;
   role: UserRole;
   isApproved?: boolean;
+  isEmailVerified?: boolean;
   wallet?: Types.ObjectId;
   comparePassword: (candidatePassword: string) => Promise<boolean>;
 }
@@ -49,6 +50,10 @@ const userSchema = new Schema<IUser>(
       default: function (this: IUser) {
         return this.role !== 'agent';
       },
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
     wallet: {
       type: Schema.Types.ObjectId,

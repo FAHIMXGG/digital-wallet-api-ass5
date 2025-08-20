@@ -76,6 +76,12 @@ A Node.js/Express API for digital wallet management with TypeScript, MongoDB, an
      - `DAILY_TRANSACTION_LIMIT_COUNT`
      - `MONTHLY_TRANSACTION_LIMIT_AMOUNT`
      - `MONTHLY_TRANSACTION_LIMIT_COUNT`
+     - `EMAIL_HOST`
+     - `EMAIL_PORT`
+     - `EMAIL_USER`
+     - `EMAIL_PASSWORD`
+     - `EMAIL_FROM`
+     - `OTP_EXPIRES_IN`
 
 5. **Redeploy** after setting environment variables:
    ```bash
@@ -111,6 +117,8 @@ Authorization:<your-jwt-token>
 ## API Endpoints
 
 ### 🔐 Authentication & Setup
+
+> **Note:** Email verification is now required. After registration, users must verify their email before they can log in.
 
 #### 1.1 Register a Regular User
 ```http
@@ -196,6 +204,65 @@ Content-Type: application/json
 > ⚠️ **Note:** Agent login will fail until the agent is approved by an admin.
 
 > 📝 **Action:** For each successful login, copy the `token` from the response.
+
+---
+
+### 📧 Email Verification & Password Management
+
+#### 1.6 Verify Email with OTP
+```http
+POST /api/v1/auth/verify-email
+Content-Type: application/json
+
+{
+    "email": "user0@example.com",
+    "otp": "123456"
+}
+```
+
+#### 1.7 Resend Verification Email
+```http
+POST /api/v1/auth/resend-verification
+Content-Type: application/json
+
+{
+    "email": "user0@example.com"
+}
+```
+
+#### 1.8 Forgot Password
+```http
+POST /api/v1/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": "user0@example.com"
+}
+```
+
+#### 1.9 Reset Password with OTP
+```http
+POST /api/v1/auth/reset-password
+Content-Type: application/json
+
+{
+    "email": "user0@example.com",
+    "otp": "654321",
+    "newPassword": "newpassword123"
+}
+```
+
+#### 1.10 Change Password (Authenticated)
+```http
+POST /api/v1/auth/change-password
+Authorization:<user_token>
+Content-Type: application/json
+
+{
+    "currentPassword": "password123",
+    "newPassword": "newpassword123"
+}
+```
 
 ---
 
