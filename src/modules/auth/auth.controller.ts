@@ -23,11 +23,35 @@ const register = catchAsync(async (req: Request, res: Response) => {
 const login = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const { user, token } = await AuthService.loginUser(email, password);
+
+  // 🍪 Set JWT in cookie
+  res.cookie('accessToken', token, {
+    httpOnly: true, // prevents access from JavaScript
+    secure: true, // HTTPS only in production
+    sameSite: 'none', // prevents CSRF
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: 'User logged in successfully!',
-    data: { user, token },
+    data: { user }, // we don't need to send token anymore
+  });
+});
+
+const logout = catchAsync(async (req: Request, res: Response) => {
+  // Clear the cookie
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none', // match your login cookie settings
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User logged out successfully!',
   });
 });
 
@@ -100,4 +124,5 @@ export const AuthController = {
   forgotPassword,
   resetPassword,
   changePassword,
+  logout
 };

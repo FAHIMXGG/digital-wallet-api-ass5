@@ -5,12 +5,18 @@ import errorHandler from './middlewares/errorHandler.middleware';
 import { UserRoutes } from './modules/user/user.route';
 import { WalletRoutes } from './modules/wallet/wallet.route';
 import { TransactionRoutes } from './modules/transaction/transaction.route';
+import config from './config';
+import cookieParser from 'cookie-parser';
 
 
 const app: Application = express();
-
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: config.frontEndUrl,
+  credentials: true,
+}));
+
 
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/users', UserRoutes);
@@ -27,3 +33,4 @@ app.get('/', (req, res) => {
 app.use(errorHandler);
 
 export default app;
+

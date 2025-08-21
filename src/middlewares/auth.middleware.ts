@@ -14,7 +14,7 @@ interface AuthenticatedRequest extends Request {
 
 const auth = (...requiredRoles: UserRole[]) => {
   return catchAsync(async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization; 
+    const token = req.headers.authorization || req.cookies.accessToken; 
 
     if (!token) {
       return sendResponse(res, {

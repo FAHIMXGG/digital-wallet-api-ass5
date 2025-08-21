@@ -17,6 +17,7 @@ const router = Router();
 // Public routes
 router.post('/register', catchAsync(validateRegister), AuthController.register);
 router.post('/login', catchAsync(validateLogin), AuthController.login);
+router.post('/logout', auth('user', 'agent', 'admin'), AuthController.logout);
 router.post('/verify-email', catchAsync(validateVerifyEmail), AuthController.verifyEmail);
 router.post('/resend-verification', catchAsync(validateResendVerification), AuthController.resendVerificationEmail);
 router.post('/forgot-password', catchAsync(validateForgotPassword), AuthController.forgotPassword);

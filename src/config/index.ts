@@ -14,6 +14,7 @@ if (!jwtSecret) {
 
 export default {
   port: process.env.PORT || 5000,
+  frontEndUrl: process.env.FRONTENDURL,
   database_url: process.env.DATABASE_URL,
   jwt_secret: process.env.JWT_SECRET,
   jwt_expires_in: process.env.JWT_EXPIRES_IN,

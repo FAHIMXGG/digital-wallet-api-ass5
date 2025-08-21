@@ -3,6 +3,12 @@ import { UserService } from './user.service';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/apiResponse';
 
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    role: string;
+  };
+}
 // todo
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
@@ -55,9 +61,36 @@ const suspendAgent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getMe = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    return sendResponse(res, {
+      statusCode: 401,
+      success: false,
+      message: 'Unauthorized: No user data',
+    });
+  }
+
+  const user = await UserService.getSingleUser(req.user.id);
+  if (!user) {
+    return sendResponse(res, {
+      statusCode: 404,
+      success: false,
+      message: 'User not found!',
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User profile fetched successfully!',
+    data: user,
+  });
+});
+
 export const UserController = {
   getAllUsers,
   getSingleUser,
   approveAgent, 
   suspendAgent, 
+  getMe
 };
