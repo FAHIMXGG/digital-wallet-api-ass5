@@ -100,11 +100,39 @@ const suspendAgent = async (agentId: string) => {
   await agent.save();
   return agent;
 };
+const updateMe = async (userId: string, payload: Partial<Pick<IUser, 'name' | 'phone'>>) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: payload },
+    { new: true, runValidators: true }
+  ).select('-password').populate('wallet');
 
+  if (!updatedUser) {
+    throw new Error('User not found.');
+  }
+
+  return updatedUser;
+};
+
+const searchUsers = async (search: string, limit: number = 10) => {
+  const users = await User.find({
+    $or: [
+      { email: { $regex: search, $options: 'i' } },
+      { phone: { $regex: search, $options: 'i' } },
+    ],
+  })
+    .select('-password')
+    .populate('wallet')
+    .limit(limit);
+
+  return users;
+};
 
 export const UserService = {
   getAllUsers,
   getSingleUser,
   approveAgent, 
-  suspendAgent  
+  suspendAgent,
+  updateMe,
+  searchUsers
 };

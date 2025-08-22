@@ -87,10 +87,47 @@ const getMe = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
   });
 });
 
+const updateMe = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.user) {
+    return sendResponse(res, {
+      statusCode: 401,
+      success: false,
+      message: 'Unauthorized: No user data',
+    });
+  }
+
+  const { name, phone } = req.body;
+
+  const updatedUser = await UserService.updateMe(req.user.id, { name, phone });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Profile updated successfully!',
+    data: updatedUser,
+  });
+});
+
+const searchUsers = catchAsync(async (req: Request, res: Response) => {
+  const search = (req.query.search as string) || '';
+  const limit = parseInt((req.query.limit as string) || '10', 10);
+
+  const users = await UserService.searchUsers(search, limit);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: users.length > 0 ? 'Users found successfully!' : 'No users found!',
+    data: users,
+  });
+});
+
 export const UserController = {
   getAllUsers,
   getSingleUser,
   approveAgent, 
   suspendAgent, 
-  getMe
+  getMe,
+  updateMe,
+  searchUsers
 };
